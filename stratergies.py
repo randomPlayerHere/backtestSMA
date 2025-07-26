@@ -25,6 +25,5 @@ class sma(stratergy):
         signals['signal'][20:] = np.where((signals['sma'][20:] > signals['lma'][20:]) & (signals['sma'].shift(1)[20:] <= signals['lma'].shift(1)[20:]),1.0, 0.0)
         #Sell Signal
         signals['signal'][20:] = np.where((signals['sma'][20:] < signals['lma'][20:]) & (signals['sma'].shift(1)[20:]>= signals['lma'].shift(1)[20:]), -1.0, signals['signal'][20:])
-        signals['positions'] = signals['signals'].diff()
+        signals['positions'] = signals['signal'].diff()
         return signals
-
