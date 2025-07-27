@@ -15,12 +15,13 @@ class sma(stratergy):
         signals = pd.DataFrame(index=data.index)
         closing_price = data['Close']
         signals['price'] = closing_price
-        signals['sma'] = closing_price.rolling(window=self.short_moving_average, min_period=1).mean()
-        signals['lma'] = closing_price.rolling(window=self.long_moving_average, min_period=1).mean()
+        signals['sma'] = closing_price.rolling(window=self.short_moving_average, min_periods=1).mean()
+        signals['lma'] = closing_price.rolling(window=self.long_moving_average, min_periods=1).mean()
         return signals
 
     def generate_signals(self,data):
-        signals = self.calculate_smas()
+        signals = self.calculate_smas(data)
+        signals['signal'] = 0.0
         #Buy Signal
         signals['signal'][20:] = np.where((signals['sma'][20:] > signals['lma'][20:]) & (signals['sma'].shift(1)[20:] <= signals['lma'].shift(1)[20:]),1.0, 0.0)
         #Sell Signal
