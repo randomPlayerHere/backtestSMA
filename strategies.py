@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
 
-class stratergy:
+class strategy:
     def generate_signals(self, data):
         raise NotImplemented
 
-# SIMPLE MOVING AVERAGE STRATERGY
-class sma(stratergy):
+# SIMPLE MOVING AVERAGE strategy
+class sma(strategy):
     def __init__(self, sma_length, lma_length):
         self.short_moving_average=sma_length
         self.long_moving_average = lma_length
@@ -18,6 +18,7 @@ class sma(stratergy):
         signals['sma'] = closing_price.rolling(window=self.short_moving_average, min_periods=1).mean()
         signals['lma'] = closing_price.rolling(window=self.long_moving_average, min_periods=1).mean()
         return signals
+    
 
     def generate_signals(self,data):
         signals = self.calculate_smas(data)
