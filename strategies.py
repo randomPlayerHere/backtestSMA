@@ -23,19 +23,11 @@ class sma(strategy):
     def generate_signals(self,data):
         signals = self.calculate_smas(data)
         signals['signal'] = 0.0
-        start_idx = max(self.short_moving_average, self.long_moving_average)
-        # Buy Signal
-        signals.loc[start_idx:, 'signal'] = np.where(
-            (signals['sma'][start_idx:] > signals['lma'][start_idx:]) & 
-            (signals['sma'].shift(1)[start_idx:] <= signals['lma'].shift(1)[start_idx:]), 
-            1.0, 0.0
-        )
-        #Sell Signal
-        signals.loc[start_idx:, 'signal'] = np.where(
-            (signals['sma'][start_idx:] < signals['lma'][start_idx:]) & 
-            (signals['sma'].shift(1)[start_idx:] >= signals['lma'].shift(1)[start_idx:]), 
-            -1.0, 
-            signals['signal'][start_idx:]
-        )
+        sma_above_lma = signals['sma'] > signals['lma']
+        sma_above_lma_prev = signals['sma'].shift(1) > signals['lma'].shift(1)
+        buy_signal = sma_above_lma & ~sma_above_lma_prev
+        sell_signal = ~sma_above_lma & sma_above_lma_prev
+        signals.loc[buy_signal, 'signal'] = 1.0
+        signals.loc[sell_signal, 'signal'] = -1.0
         signals['positions'] = signals['signal'].diff()
         return signals
