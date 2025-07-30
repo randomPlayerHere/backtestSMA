@@ -6,19 +6,22 @@ class Backtest:
 
     def run(self, data, signals):
         positions = pd.DataFrame(index=signals.index)
-        positions['position'] = signals['positions']  # ← Use actual held position, not just trigger
+        positions['position'] = signals['positions']
         positions['price'] = data['Close']
-        
-        # Portfolio value = position * price
-        positions['holdings'] = positions['position'] * positions['price']
-        
-        # Assume cash decreases when we buy, increases when we sell
-        positions['cash'] = self.initial_capital - (positions['position'].diff().fillna(0) * positions['price']).cumsum()
 
-        # Total portfolio value = cash + holdings
+        # Calculate trades (difference in position)
+        positions['trade'] = positions['position'].diff().fillna(positions['position'])
+
+        # Calculate cash: subtract cost when buying, add when selling
+        positions['cash'] = self.initial_capital - (positions['trade'] * positions['price']).cumsum()
+
+        # Holdings: current position * price
+        positions['holdings'] = positions['position'] * positions['price']
+
+        # Total portfolio value
         positions['total'] = positions['cash'] + positions['holdings']
-        
-        # Daily returns (optional)
+
+        # Daily returns
         positions['returns'] = positions['total'].pct_change().fillna(0)
 
         return positions
