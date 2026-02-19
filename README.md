@@ -16,16 +16,24 @@ This project demonstrates how to backtest a simple moving average (SMA) crossove
 - Example: 50-day SMA and 200-day SMA crossover
 
 ## Tools & Libraries
-- Python
-- pandas
-- yfinance
-- matplotlib
-
-## Future Improvements
-- Parameter optimization (grid search)
-- Add slippage/transaction costs
-- Support for other indicators (e.g. RSI, MACD)
-- Use backtesting libraries (e.g., Backtrader)
+- Python, pandas, yfinance, matplotlib, Streamlit
 
 ## Structure
+```
+├── app.py              # Streamlit UI
+├── data_handler.py     # Fetch stock data
+├── strategies.py       # SMA strategy logic
+├── backtester.py       # Backtest engine
+├── visualization.py    # Charts
+└── requirements.txt
+```
+
+## Run Locally
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+## Deploy
+Push to GitHub → Deploy on [Streamlit Cloud](https://share.streamlit.io)
 
